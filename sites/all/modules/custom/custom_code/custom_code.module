@@ -1,0 +1,79 @@
+<?php
+/**
+ * Implements hook_menu()
+ */
+function custom_code_menu() {
+ $items['custom_code'] = array(
+  'title' => 'My title', //The name of the menu that will be displayed
+  'page callback' => 'custom_code_page_callback',
+  'access callback' => TRUE,
+
+  //The name of the function that will output a page
+ );
+ return $items;
+}
+
+function custom_code_page_callback() {
+ //The argument is the name of the function with the form details
+ return drupal_get_form('custom_code_form');
+}
+
+function custom_code_form($form, &$form_state) {
+ $form = array (
+  //The action attribute of the HTML form tag
+  '#action' => '#',
+  //We define a simple text field for the "name"
+  'name' => array (
+   '#type' => 'textfield',
+   //The label that will be placed with the field
+   '#title' => t('My pretty name'),
+   //The description will be placed right below the field
+   '#description' => t('My descrition'),
+   //If true the system will perform a simple check on submit so that it is never empty
+   '#required' => TRUE,
+  ),
+
+  'email' => array (
+   '#type' => 'textfield',
+   //The label that will be placed with the field
+   '#title' => t('Enter your email address'),
+   //The description will be placed right below the field
+     //If true the system will perform a simple check on submit so that it is never empty
+   '#required' => TRUE,
+  ),
+
+  //We define a simple submit button
+  'submit' => array (
+   '#type' => 'submit',
+   '#value' => t('My submit'),
+  ),
+ );
+
+ return $form;
+}
+
+function custom_code_form_validate($form, &$form_state){
+ // My validation parameters
+// if(strlen($form_state['values']['email']) < 0) {
+  //form_set_error('', t('Field can not be blank!'));
+  //valid_email_address($form_state['values']['email']);
+ //}
+ //$form['#validate'][] = 'custom_code_form_validate';
+ $valid_email = $form_state['values']['email'];
+ if (!valid_email_address($valid_email)) {
+   form_set_error('email', 'Your email address not valid');
+ }
+
+
+
+}
+
+//function valid_email_address($mail) {
+  //return (bool) filter_var($mail, FILTER_VALIDATE_EMAIL);
+//}
+
+
+function custom_code_form_submit($form, &$form_state) {
+ //My success processing
+ drupal_set_message(t('Yay, your name is fine!'));
+}
